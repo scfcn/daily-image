@@ -133,13 +133,13 @@ def merge_and_update_images(new_images, existing_index):
     # 按日期排序(最新的在前面)
     combined_index.sort(key=lambda x: x["date"], reverse=True)
     
-    # 保留最近400天的数据
-    four_hundred_days_ago = (datetime.now() - timedelta(days=400)).strftime("%Y-%m-%d")
+    # 保留5年的数据
+    five_years_ago = (datetime.now() - timedelta(days=1850)).strftime("%Y-%m-%d")
     filtered_index = []
     removed_files = set()
     
     for item in combined_index:
-        if item["date"] > four_hundred_days_ago:
+        if item["date"] > five_years_ago:
             filtered_index.append(item)
         else:
             # 记录要删除的文件
