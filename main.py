@@ -134,7 +134,7 @@ def merge_and_update_images(new_images, existing_index):
     combined_index.sort(key=lambda x: x["date"], reverse=True)
     
     # 保留最近400天的数据
-    thirty_days_ago = (datetime.now() - timedelta(days=400)).strftime("%Y-%m-%d")
+    four_hundred_days_ago = (datetime.now() - timedelta(days=400)).strftime("%Y-%m-%d")
     filtered_index = []
     removed_files = set()
     
