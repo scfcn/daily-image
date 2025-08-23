@@ -1,40 +1,41 @@
+// 缓存图片数据，减少重复请求
+let cachedPictures = null;
+let cacheTimestamp = 0;
+const CACHE_TTL = 43200000; // 缓存12小时（12×60×60×1000毫秒）
+
 export async function onRequest(context) {
-  const { request, env, next } = context;
+  const { request } = context;
   
   try {
-    // 调用EdgeOne Pages的资产API获取/picture目录下的所有文件
-    // 注意：_assets是EdgeOne提供的内置对象，用于访问项目资产
-    const pictureDir = await env._assets.list({ prefix: 'picture/' });
-    
-    // 过滤出图片文件（可根据需要调整文件类型过滤）
-    const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'];
-    const pictures = pictureDir.objects
-      .map(item => item.key)
-      .filter(key => {
-        const ext = key.split('.').pop().toLowerCase();
-        return imageExtensions.includes(ext);
-      });
-    
-    if (pictures.length === 0) {
-      return new Response('No pictures found in /picture directory', { status: 404 });
+    // 使用缓存数据（如果有效）
+    const now = Date.now();
+    if (!cachedPictures || now - cacheTimestamp > CACHE_TTL) {
+      // 只在缓存过期时才重新请求
+      const origin = new URL(request.url).origin;
+      const response = await fetch(`${origin}/picture/index.json`);
+      
+      if (!response.ok) {
+        return new Response('Index not found', { status: 404 });
+      }
+      
+      // 直接解析并缓存
+      cachedPictures = await response.json();
+      cacheTimestamp = now;
     }
     
     // 随机选择一张图片
-    const randomIndex = Math.floor(Math.random() * pictures.length);
-    const randomPicture = pictures[randomIndex];
+    const randomIndex = Math.floor(cachedPictures.length * Math.random());
+    const path = cachedPictures[randomIndex].path;
     
-    // 构建重定向URL（确保路径正确）
-    const redirectUrl = `/${randomPicture}`;
-    
-    // 返回302重定向响应
+    // 返回重定向响应
     return new Response(null, {
       status: 302,
       headers: {
-        Location: redirectUrl
+        Location: path,
+        'Cache-Control': 'no-store' // 确保每次请求都重新随机
       }
     });
   } catch (error) {
-    console.error('Error fetching pictures:', error);
-    return new Response('Internal server error', { status: 500 });
+    return new Response('Error', { status: 500 });
   }
 }
