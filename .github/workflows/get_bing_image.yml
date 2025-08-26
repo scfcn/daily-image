@@ -2,8 +2,12 @@ name: Daily Get Bing Image
 
 on:
   schedule:
+    # 设置时区为中国时区 (UTC+8)，每天中午12点运行
     - cron: "0 4 * * *"
   workflow_dispatch:
+
+env:
+  TZ: Asia/Shanghai
 
 jobs:
   get_bing_image:
@@ -54,10 +58,7 @@ jobs:
 
     - name: Commit and push to page branch
       run: |
-        cp ./page/index.html static/
-        cp ./page/favicon.ico static/
-        cp ./page/readme.md static/
-        cp ./page/edgeone.json static/
+        cp -r ./page/. static/
         cd static
         git init
         git checkout -b page

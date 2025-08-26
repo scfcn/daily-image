@@ -64,7 +64,7 @@
         height: 22px;
         border-radius: 50%;
       }
-      @media (max-width: 368px) {
+      @media (max-width: 500px) {
         .floating-menu {
           display: none;
         }
@@ -318,8 +318,7 @@
         justify-content: center;
         opacity: 0;
         visibility: hidden;
-        transition: opacity 0.3s ease, visibility 0.3s ease,
-          background 0.3s ease, backdrop-filter 0.3s ease;
+        transition: opacity 0.3s ease, visibility 0.3s ease, background 0.3s ease, backdrop-filter 0.3s ease;
       }
 
       .modal.active {
@@ -433,6 +432,9 @@
       >
       <a href="https://www.qxzhan.cn/" class="menu-item" target="_blank"
         >主页</a
+      >
+      <a href="/api" class="menu-item" target="_blank"
+        >接口文档</a
       >
       <a
         href="https://github.com/scfcn/daily-image"

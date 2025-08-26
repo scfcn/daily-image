@@ -21,7 +21,7 @@ os.makedirs(PICTURE_FOLDER, exist_ok=True)
 def fetch_bing_images(n=8):
     """获取最新的Bing壁纸信息"""
     try:
-        url = f"https://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n={n}&uhd=1"
+        url = f"https://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n={n}&uhd=1&mkt=zh-CN"
         resp = requests.get(url)
         resp.raise_for_status()
         data = resp.json()
@@ -133,13 +133,13 @@ def merge_and_update_images(new_images, existing_index):
     # 按日期排序(最新的在前面)
     combined_index.sort(key=lambda x: x["date"], reverse=True)
     
-    # 保留5年的数据
-    five_years_ago = (datetime.now() - timedelta(days=1850)).strftime("%Y-%m-%d")
+    # 保留最近30天的数据
+    thirty_days_ago = (datetime.now() - timedelta(days=30)).strftime("%Y-%m-%d")
     filtered_index = []
     removed_files = set()
     
     for item in combined_index:
-        if item["date"] > five_years_ago:
+        if item["date"] > thirty_days_ago:
             filtered_index.append(item)
         else:
             # 记录要删除的文件

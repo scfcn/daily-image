@@ -4,7 +4,9 @@
   <img src="https://raw.githubusercontent.com/scfcn/daily-image/refs/heads/page/daily.webp" alt="Daily Bing Wallpaper" width="600" />
 </p>
 
-这是一个基于 GitHub Actions 自动获取并展示 Bing 每日高清壁纸的项目。每天早上 6 点（中国时间）自动抓取最新壁纸，生成 WebP/JPEG 格式图片，维护最近 30 天的壁纸，并发布至 `page` 分支，用于 GitHub Pages 页面展示。
+这是一个基于 GitHub Actions 自动获取并展示 Bing 每日高清壁纸的项目。每天早上 6 点（中国时间）自动抓取最新壁纸，生成 WebP/JPEG 格式图片，维护最近 30 天的壁纸，并发布至 `page` 分支，用于 Pages 服务部署并展示。
+
+**推荐使用 EO Pages 服务部署，目前已支持随机图 API 功能。**
 
 ---
 
@@ -12,8 +14,8 @@
 
 - 📅 **每日自动更新**：每天定时从 Bing 官方源抓取高清壁纸（2560x1600 或 1920x1080）。
 - 🖼️ **多格式保存**：保存为 `webp`, `jpeg` 等格式，兼顾网页加载与高清查看。
-- 📂 **历史记录管理**：维护 5 年的壁纸及信息索引 `index.json`。
-- 🌐 **网页展示支持**：与 GitHub Pages 搭配，展示壁纸和版权信息。
+- 📂 **历史记录管理**：维护 30 天的壁纸及信息索引 `index.json`。
+- 🌐 **网页展示支持**：与 EO Pages 搭配，展示壁纸和版权信息。
 
 ---
 
@@ -45,15 +47,28 @@
 - 使用 `cron: '0 20 * * *'`（UTC 时间），即北京时间早上 6 点。
 - 运行 `main.py` 获取并保存壁纸。
 - 将图片和网页内容推送到 `page` 分支。
-- 使用 GitHub Pages 公开展示（`https://bing.qxzhan.cn/`）。
+- 使用 GitHub Pages 公开展示（`https://willow-god.github.io/daily-image/`）。
 
 ---
 
 ## 🌍 在线预览地址
 
-- 🔗 **EO Pages 页面**：[https://bing.qxzhan.cn/](https://bing.qxzhan.cn/)
+- 🔗 **柳神**：[https://bing.liushen.fun/](https://bing.liushen.fun/)
+- 🔗 **筱序二十**：[https://bing.qxzhan.cn/](https://bing.qxzhan.cn/)
 
 ---
+
+## 🛺 使用方式
+
+1. **随机图 API**：
+   - 访问 `https://bing.qxzhan.cn/api/random` 获取随机壁纸。
+   - 可在网页中直接使用，如：`<img src="https://bing.qxzhan.cn/api/random" alt="随机壁纸" />`。
+
+2. **每日一图 API**：
+   - 访问 `https://bing.qxzhan.cn/api/daily` 或者 `https://bing.qxzhan.cn/daily.webp` 获取今日壁纸。
+   - 可在网页中直接使用，如：`<img src="https://bing.qxzhan.cn/api/daily" alt="今日壁纸" />`。
+
+更多参数欢迎访问地址：[https://bing.qxzhan.cn/api](https://bing.qxzhan.cn/api) 进行查询。
 
 ## 📜 License
 
