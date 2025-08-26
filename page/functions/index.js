@@ -2,7 +2,7 @@ export default async function onRequest(context) {
   const { request } = context;
   const url = new URL(request.url);
   const base = `${url.protocol}//${url.host}`;
-
+  if (url.pathname === '/api' || url.pathname === '/api/') {
   const html = `
 <!DOCTYPE html>
 <html lang="zh">
@@ -50,7 +50,7 @@ export default async function onRequest(context) {
 </body>
 </html>
   `;
-
+  }
   return new Response(html, {
     headers: { "Content-Type": "text/html; charset=utf-8" },
   });
