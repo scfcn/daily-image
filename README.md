@@ -47,28 +47,27 @@
 - 使用 `cron: '0 20 * * *'`（UTC 时间），即北京时间早上 6 点。
 - 运行 `main.py` 获取并保存壁纸。
 - 将图片和网页内容推送到 `page` 分支。
-- 使用 GitHub Pages 公开展示（`https://willow-god.github.io/daily-image/`）。
 
 ---
 
 ## 🌍 在线预览地址
 
 - 🔗 **柳神**：[https://bing.liushen.fun/](https://bing.liushen.fun/)
-- 🔗 **筱序二十**：[https://bing.qxzhan.cn/](https://bing.qxzhan.cn/)
+- 🔗 **筱序二十**：[https://bing.qixz.cn/](https://bing.qixz.cn/)
 
 ---
 
 ## 🛺 使用方式
 
 1. **随机图 API**：
-   - 访问 `https://bing.qxzhan.cn/api/random` 获取随机壁纸。
-   - 可在网页中直接使用，如：`<img src="https://bing.qxzhan.cn/api/random" alt="随机壁纸" />`。
+   - 访问 `https://bing.qixz.cn/api/random` 获取随机壁纸。
+   - 可在网页中直接使用，如：`<img src="https://bing.qixz.cn/api/random" alt="随机壁纸" />`。
 
 2. **每日一图 API**：
-   - 访问 `https://bing.qxzhan.cn/api/daily` 或者 `https://bing.qxzhan.cn/daily.webp` 获取今日壁纸。
-   - 可在网页中直接使用，如：`<img src="https://bing.qxzhan.cn/api/daily" alt="今日壁纸" />`。
+   - 访问 `https://bing.qixz.cn/api/daily` 或者 `https://bing.qixz.cn/daily.webp` 获取今日壁纸。
+   - 可在网页中直接使用，如：`<img src="https://bing.qixz.cn/api/daily" alt="今日壁纸" />`。
 
-更多参数欢迎访问地址：[https://bing.qxzhan.cn/api](https://bing.qxzhan.cn/api) 进行查询。
+更多参数欢迎访问地址：[https://bing.qixz.cn/api](https://bing.qixz.cn/api) 进行查询。
 
 ## 📜 License
 

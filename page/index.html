@@ -193,12 +193,12 @@
         animation: spin 1s ease-in-out infinite;
       }
 
-      /* .yiyan-signature {
+      .yiyan-signature {
         width: 760px;
         max-width: 100%;
         text-align: right;
         padding: 20px 0;
-      } */
+      }
       
       @keyframes spin {
         to { transform: rotate(360deg); }
@@ -210,6 +210,66 @@
         background: #1e1e1e;
         flex: 1;
       }
+
+      .filter-section {
+        max-width: 1200px;
+        margin: 0 auto 30px;
+        padding: 20px;
+        background: rgba(45, 45, 45, 0.5);
+        border-radius: 12px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .filter-group {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .filter-group label {
+        color: #e0e0e0;
+        font-size: 0.95rem;
+        font-weight: 500;
+      }
+
+      .filter-select {
+        padding: 8px 16px;
+        background: #2d2d2d;
+        color: #e0e0e0;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        min-width: 120px;
+      }
+
+      .filter-select:hover {
+        border-color: rgba(255, 255, 255, 0.3);
+        background: #3d3d3d;
+      }
+
+      .filter-select:focus {
+        outline: none;
+        border-color: rgba(255, 255, 255, 0.5);
+        box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
+      }
+
+      .filter-info {
+        margin-left: auto;
+        color: #aaa;
+        font-size: 0.9rem;
+      }
+
+      .filter-info span {
+        color: #e0e0e0;
+        font-weight: 500;
+      }
+
       .history {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
@@ -228,6 +288,37 @@
         .history {
           grid-template-columns: 1fr;
         }
+        .filter-section {
+          flex-direction: column;
+          align-items: stretch;
+        }
+        .filter-info {
+          margin-left: 0;
+          text-align: center;
+        }
+      }
+
+      .loading-more {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        padding: 30px;
+        color: #aaa;
+        font-size: 0.95rem;
+      }
+
+      .loading-spinner {
+        width: 24px;
+        height: 24px;
+        border: 3px solid rgba(255, 255, 255, 0.1);
+        border-top-color: #fff;
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+      }
+
+      @keyframes spin {
+        to { transform: rotate(360deg); }
       }
 
       /* 图片加载过渡效果 */
@@ -301,6 +392,11 @@
       .card:hover .copy-text {
         opacity: 1;
         transform: translateY(0);
+      }
+
+      .img-error {
+        opacity: 0.6;
+        filter: grayscale(100%);
       }
 
       /* 更新后的Modal样式 */
@@ -427,10 +523,10 @@
       <a href="/" style="display: flex; align-items: center; margin: 0 5px 0 5px">
         <img src="favicon.ico" alt="Icon" class="menu-icon" />
       </a>
-      <a href="https://qxzhan.cn/" class="menu-item" target="_blank"
+      <a href="https://www.qixz.cn/" class="menu-item" target="_blank"
         >青序栈</a
       >
-      <a href="https://www.qxzhan.cn/" class="menu-item" target="_blank"
+      <a href="https://me.qixz.cn/" class="menu-item" target="_blank"
         >主页</a
       >
       <a href="/api" class="menu-item" target="_blank"
@@ -470,7 +566,40 @@
     </div>
 
     <div class="history-container">
+      <div class="filter-section">
+        <div class="filter-group">
+          <label for="year-filter">年份:</label>
+          <select id="year-filter" class="filter-select">
+            <option value="all">全部</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label for="month-filter">月份:</label>
+          <select id="month-filter" class="filter-select">
+            <option value="all">全部</option>
+            <option value="01">1月</option>
+            <option value="02">2月</option>
+            <option value="03">3月</option>
+            <option value="04">4月</option>
+            <option value="05">5月</option>
+            <option value="06">6月</option>
+            <option value="07">7月</option>
+            <option value="08">8月</option>
+            <option value="09">9月</option>
+            <option value="10">10月</option>
+            <option value="11">11月</option>
+            <option value="12">12月</option>
+          </select>
+        </div>
+        <div class="filter-info">
+          <span id="image-count">加载中...</span>
+        </div>
+      </div>
       <div class="history" id="history"></div>
+      <div class="loading-more" id="loading-more" style="display: none;">
+        <div class="loading-spinner"></div>
+        <span>加载更多...</span>
+      </div>
     </div>
 
     <!-- 页脚 -->
@@ -516,7 +645,7 @@
           >daily-image</a>
         | MIT License © <span id="year"></span> |
         <a
-          href="https://me.qxzhan.cn/"
+          href="https://me.qixz/"
           target="_blank"
           rel="nofollow noopener noreferrer"
           >筱序二十</a>
@@ -575,7 +704,6 @@
 
     <script>
       document.addEventListener("DOMContentLoaded", () => {
-        // Modal elements
         const modal = document.getElementById("imageModal");
         const modalImage = document.getElementById("modalImage");
         const modalCaption = document.getElementById("modalCaption");
@@ -585,64 +713,32 @@
           modal.classList.remove("active");
           setTimeout(() => {
             modal.style.display = "none";
-          }, 300); // 匹配CSS过渡时间
+          }, 300);
         }
 
         function showModal() {
           modal.style.display = "flex";
-          // 强制重绘，确保动画运行
           void modal.offsetWidth;
           modal.classList.add("active");
         }
 
-        // Close modal when clicking the close button
         modalClose.addEventListener("click", closeModal);
-
-        // Close modal when clicking outside the image
         modal.addEventListener("click", (e) => {
-          if (e.target === modal) {
-            closeModal();
-          }
+          if (e.target === modal) closeModal();
         });
-
-        // Close modal with Escape key
         document.addEventListener("keydown", (e) => {
-          if (e.key === "Escape" && modal.classList.contains("active")) {
-            closeModal();
-          }
+          if (e.key === "Escape" && modal.classList.contains("active")) closeModal();
         });
 
-        // 图片加载函数
-        function loadImage(imgElement, src) {
-          // imgElement.classList.add("img-loading");
-          const loader = new Image();
-          loader.src = src;
-          loader.onload = () => {
-            imgElement.src = src;
-            imgElement.classList.add("img-loaded");
-          };
-          loader.onerror = () => {
-            imgElement.classList.remove("img-loading");
-            console.error("图片加载失败:", src);
-          };
-        }
-
-        // 获取一言
         const yiyanContent = document.querySelector('.yiyan-content');
-        
         fetch('https://v2.xxapi.cn/api/yiyan?type=hitokoto')
           .then(response => response.json())
           .then(data => {
             if (data.code === 200 && data.data) {
-              // 创建淡入效果
               yiyanContent.innerHTML = `<span style="opacity: 0; transition: opacity 1s ease;">${data.data}</span>`;
-              
-              // 强制重绘后显示文字
               setTimeout(() => {
                 const textSpan = yiyanContent.querySelector('span');
-                if (textSpan) {
-                  textSpan.style.opacity = '1';
-                }
+                if (textSpan) textSpan.style.opacity = '1';
               }, 100);
             } else {
               yiyanContent.textContent = '生活，是一场无法回放的电影，我们都是自己的导演。';
@@ -653,71 +749,289 @@
             yiyanContent.textContent = '生活，是一场无法回放的电影，我们都是自己的导演。';
           });
 
+        const LAZY_LOAD_CONFIG = {
+          rootMargin: '200px',
+          threshold: 0.01,
+          preloadThreshold: 300,
+          maxConcurrentLoads: 4,
+          batchSize: 20
+        };
+
+        let allImageData = [];
+        let filteredData = [];
+        let currentBatch = 0;
+        let loadingQueue = [];
+        let activeLoads = 0;
+        let observer = null;
+
+        class ImageLoader {
+          constructor() {
+            this.observer = new IntersectionObserver(
+              this.handleIntersection.bind(this),
+              {
+                rootMargin: LAZY_LOAD_CONFIG.rootMargin,
+                threshold: LAZY_LOAD_CONFIG.threshold
+              }
+            );
+            this.pendingImages = new Map();
+          }
+
+          handleIntersection(entries) {
+            entries.forEach(entry => {
+              if (entry.isIntersecting) {
+                const img = entry.target;
+                const src = img.dataset.src;
+                if (src && !img.dataset.loaded) {
+                  this.loadImage(img, src);
+                }
+              }
+            });
+          }
+
+          loadImage(img, src) {
+            if (activeLoads >= LAZY_LOAD_CONFIG.maxConcurrentLoads) {
+              loadingQueue.push({ img, src });
+              return;
+            }
+
+            activeLoads++;
+            img.classList.add('img-loading');
+
+            const loader = new Image();
+            loader.src = src;
+
+            loader.onload = () => {
+              img.src = src;
+              img.classList.add('img-loaded');
+              img.dataset.loaded = 'true';
+              activeLoads--;
+              this.processQueue();
+            };
+
+            loader.onerror = () => {
+              img.classList.remove('img-loading');
+              img.classList.add('img-error');
+              img.src = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMmQyZDJkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiM2NjYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiPueahOaWh+eroDwvdGV4dD48L3N2Zz4=';
+              console.error("图片加载失败:", src);
+              activeLoads--;
+              this.processQueue();
+            };
+
+            this.observer.unobserve(img);
+          }
+
+          processQueue() {
+            while (loadingQueue.length > 0 && activeLoads < LAZY_LOAD_CONFIG.maxConcurrentLoads) {
+              const { img, src } = loadingQueue.shift();
+              this.loadImage(img, src);
+            }
+          }
+
+          observe(img) {
+            this.observer.observe(img);
+          }
+
+          disconnect() {
+            this.observer.disconnect();
+          }
+        }
+
+        const imageLoader = new ImageLoader();
+
+        function parseDate(dateStr) {
+          const parts = dateStr.split('-');
+          if (parts.length === 3) {
+            return {
+              year: parts[0],
+              month: parts[1],
+              day: parts[2],
+              full: dateStr
+            };
+          }
+          return null;
+        }
+
+        function populateYearFilter(data) {
+          const yearSelect = document.getElementById('year-filter');
+          const years = new Set();
+          
+          data.forEach(item => {
+            const dateInfo = parseDate(item.date);
+            if (dateInfo) {
+              years.add(dateInfo.year);
+            }
+          });
+
+          const sortedYears = Array.from(years).sort((a, b) => b.localeCompare(a));
+          
+          sortedYears.forEach(year => {
+            const option = document.createElement('option');
+            option.value = year;
+            option.textContent = year + '年';
+            yearSelect.appendChild(option);
+          });
+        }
+
+        function filterData() {
+          const yearFilter = document.getElementById('year-filter').value;
+          const monthFilter = document.getElementById('month-filter').value;
+
+          filteredData = allImageData.filter(item => {
+            const dateInfo = parseDate(item.date);
+            if (!dateInfo) return false;
+
+            const yearMatch = yearFilter === 'all' || dateInfo.year === yearFilter;
+            const monthMatch = monthFilter === 'all' || dateInfo.month === monthFilter;
+
+            return yearMatch && monthMatch;
+          });
+
+          updateImageCount();
+          currentBatch = 0;
+          renderImages();
+        }
+
+        function updateImageCount() {
+          const countEl = document.getElementById('image-count');
+          countEl.textContent = `共 ${filteredData.length} 张图片`;
+        }
+
+        function createCard(item, index) {
+          const card = document.createElement("div");
+          card.className = "card";
+          card.style.opacity = "0";
+          card.style.transform = "translateY(50px)";
+          card.style.transition = "opacity 1.0s cubic-bezier(.4,2,.6,1), transform 1.0s cubic-bezier(.4,2,.6,1)";
+
+          const img = document.createElement("img");
+          img.alt = item.date;
+          img.className = "img-loading";
+          img.dataset.src = item.path;
+          img.src = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMmQyZDJkIi8+PC9zdmc+";
+
+          const dateLabel = document.createElement("div");
+          dateLabel.className = "date-label";
+          dateLabel.textContent = item.date;
+
+          const copyText = document.createElement("div");
+          copyText.className = "copy-text";
+          copyText.textContent = item.copyright;
+
+          card.appendChild(img);
+          card.appendChild(dateLabel);
+          card.appendChild(copyText);
+
+          card.addEventListener("click", () => {
+            modalImage.src = item.path;
+            modalCaption.textContent = `${item.date} - ${item.copyright}`;
+            showModal();
+          });
+
+          return card;
+        }
+
+        function renderImages() {
+          const historyEl = document.getElementById("history");
+          historyEl.innerHTML = '';
+
+          const start = currentBatch * LAZY_LOAD_CONFIG.batchSize;
+          const end = start + LAZY_LOAD_CONFIG.batchSize;
+          const batch = filteredData.slice(start, end);
+
+          batch.forEach((item, index) => {
+            const card = createCard(item, index);
+            historyEl.appendChild(card);
+
+            const img = card.querySelector('img');
+            imageLoader.observe(img);
+
+            setTimeout(() => {
+              card.style.opacity = "1";
+              card.style.transform = "translateY(0)";
+            }, index * 50);
+          });
+
+          if (end < filteredData.length) {
+            document.getElementById('loading-more').style.display = 'flex';
+          } else {
+            document.getElementById('loading-more').style.display = 'none';
+          }
+        }
+
+        function loadMoreImages() {
+          let end = (currentBatch + 1) * LAZY_LOAD_CONFIG.batchSize;
+          if (end >= filteredData.length) return;
+
+          currentBatch++;
+          const historyEl = document.getElementById("history");
+          const start = currentBatch * LAZY_LOAD_CONFIG.batchSize;
+          end = start + LAZY_LOAD_CONFIG.batchSize;
+          const batch = filteredData.slice(start, end);
+
+          batch.forEach((item, index) => {
+            const card = createCard(item, index);
+            historyEl.appendChild(card);
+
+            const img = card.querySelector('img');
+            imageLoader.observe(img);
+
+            setTimeout(() => {
+              card.style.opacity = "1";
+              card.style.transform = "translateY(0)";
+            }, index * 50);
+          });
+
+          if (end >= filteredData.length) {
+            document.getElementById('loading-more').style.display = 'none';
+          }
+        }
+
+        const yearFilter = document.getElementById('year-filter');
+        const monthFilter = document.getElementById('month-filter');
+
+        yearFilter.addEventListener('change', filterData);
+        monthFilter.addEventListener('change', filterData);
+
+        window.addEventListener('scroll', () => {
+          const scrollPosition = window.innerHeight + window.scrollY;
+          const pageHeight = document.documentElement.scrollHeight;
+
+          if (scrollPosition >= pageHeight - 500) {
+            loadMoreImages();
+          }
+        });
+
         fetch("/picture/index.json")
-          .then((res) => res.json())
-            .then((data) => {
+          .then(res => res.json())
+          .then(data => {
             if (!Array.isArray(data) || data.length === 0) {
               console.error("index.json 内容不合法");
               return;
             }
 
-            // 默认将第一张作为今日图
+            allImageData = data;
+            filteredData = [...data];
+
             const today = data[0];
             const heroImg = document.getElementById("hero-img");
             document.getElementById("hero-date").textContent = today.date;
             document.getElementById("hero-copy").textContent = today.copyright;
-            loadImage(heroImg, today.path);
 
-            // 其余为历史图
-            const historyEl = document.getElementById("history");
+            const heroLoader = new Image();
+            heroLoader.src = today.path;
+            heroLoader.onload = () => {
+              heroImg.src = today.path;
+              heroImg.classList.add("img-loaded");
+            };
 
-            // 逐个添加卡片，带动画
-            data.forEach((item, index) => {
-              setTimeout(() => {
-              const card = document.createElement("div");
-              card.className = "card";
-              card.style.opacity = "0";
-              card.style.transform = "translateY(50px)";
-              card.style.transition = "opacity 1.0s cubic-bezier(.4,2,.6,1), transform 1.0s cubic-bezier(.4,2,.6,1)";
-
-              const img = document.createElement("img");
-              img.alt = item.date;
-              img.className = "img-loading";
-              img.src =
-                "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMmQyZDJkIi8+PC9zdmc+";
-
-              const dateLabel = document.createElement("div");
-              dateLabel.className = "date-label";
-              dateLabel.textContent = item.date;
-
-              const copyText = document.createElement("div");
-              copyText.className = "copy-text";
-              copyText.textContent = item.copyright;
-
-              card.appendChild(img);
-              card.appendChild(dateLabel);
-              card.appendChild(copyText);
-              historyEl.appendChild(card);
-
-              // 加载实际图片
-              loadImage(img, item.path);
-
-              // Add click event to show modal
-              card.addEventListener("click", () => {
-                modalImage.src = item.path;
-                modalCaption.textContent = `${item.date} - ${item.copyright}`;
-                showModal();
-              });
-
-              // 触发动画
-              setTimeout(() => {
-                card.style.opacity = "1";
-                card.style.transform = "translateY(0)";
-              }, 50);
-              }, index * 80); // 每个卡片延迟80ms
-            });
+            populateYearFilter(data);
+            updateImageCount();
+            renderImages();
           })
-          .catch((err) => console.error("加载 index.json 失败", err));
+          .catch(error => {
+            console.error("加载数据失败:", error);
+            document.getElementById('image-count').textContent = '加载失败';
+          });
       });
     </script>
   </body>
