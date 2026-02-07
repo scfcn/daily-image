@@ -1025,8 +1025,15 @@
             };
 
             populateYearFilter(data);
-            updateImageCount();
-            renderImages();
+            
+            const now = new Date();
+            const currentYear = now.getFullYear().toString();
+            const currentMonth = (now.getMonth() + 1).toString().padStart(2, '0');
+            
+            document.getElementById('year-filter').value = currentYear;
+            document.getElementById('month-filter').value = currentMonth;
+            
+            filterData();
           })
           .catch(error => {
             console.error("加载数据失败:", error);
