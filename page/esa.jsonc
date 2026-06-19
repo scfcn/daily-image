@@ -1,0 +1,12 @@
+{
+  // ESA Pages 项目配置
+  // 文档：https://help.aliyun.com/zh/edge-security-acceleration/esa/user-guide/build-pages
+  "name": "daily-image",
+  // 入口函数：根级 /get
+  "entry": "./functions/get.js",
+  "assets": {
+    // 静态资源托管目录（page 分支根目录）
+    "directory": "./",
+    "notFoundStrategy": "404Page"
+  }
+}
