@@ -1,12 +1,12 @@
 /**
- * API 文档首页（ESA Pages 函数模板）
+ * API 文档首页 handler（ESA Pages 函数路由）
+ * 用法：GET /api
  */
-export default {
-  async fetch(request, env, ctx) {
-    const url = new URL(request.url);
-    const base = `${url.protocol}//${url.host}`;
+export async function handle(request, env, ctx) {
+  const url = new URL(request.url);
+  const base = `${url.protocol}//${url.host}`;
 
-    const html = `
+  const html = `
 <!DOCTYPE html>
 <html lang="zh">
 <head>
@@ -54,8 +54,7 @@ export default {
 </html>
   `;
 
-    return new Response(html, {
-      headers: { "Content-Type": "text/html; charset=utf-8" },
-    });
-  },
-};
+  return new Response(html, {
+    headers: { "Content-Type": "text/html; charset=utf-8" },
+  });
+}
