@@ -238,8 +238,8 @@
 
       .filter-select {
         position: relative;
-        padding: 10px 40px 10px 16px;
-        background: linear-gradient(135deg, #2a2a2a, #353535);
+        padding: 10px 38px 10px 16px;
+        background-color: #2d2d2d;
         color: #e0e0e0;
         border: 1px solid rgba(255, 255, 255, 0.08);
         border-radius: 10px;
@@ -252,30 +252,172 @@
         -webkit-appearance: none;
         -moz-appearance: none;
         background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23aaaaaa' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-        background-repeat: no-repeat;
-        background-position: right 14px center;
-        background-size: 14px;
-        padding-right: 38px;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+        background-repeat: no-repeat, no-repeat;
+        background-position: right 14px center, 0 0;
+        background-size: 14px, auto;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03), 0 2px 6px rgba(0, 0, 0, 0.2);
       }
 
       .filter-select:hover {
-        border-color: rgba(255, 255, 255, 0.25);
+        background-color: #353535;
+        border-color: rgba(255, 255, 255, 0.2);
         background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
         transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
       }
 
       .filter-select:focus {
         outline: none;
-        border-color: rgba(255, 255, 255, 0.4);
-        box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.08), 0 4px 12px rgba(0, 0, 0, 0.3);
+        background-color: #3a3a3a;
+        border-color: rgba(255, 255, 255, 0.35);
+        box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1), 0 4px 12px rgba(0, 0, 0, 0.35);
       }
 
       .filter-select option {
-        background: #2a2a2a;
+        background-color: #2d2d2d;
         color: #e0e0e0;
-        padding: 10px;
+      }
+
+      /* 隐藏原生 select，保留自定义组件 */
+      .native-select-hidden {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        pointer-events: none;
+        visibility: hidden;
+      }
+
+      /* 自定义下拉框容器 */
+      .custom-select {
+        position: relative;
+        display: inline-block;
+        min-width: 120px;
+      }
+
+      /* 触发器 */
+      .custom-select-trigger {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 14px 10px 16px;
+        background-color: #2d2d2d;
+        color: #e0e0e0;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 10px;
+        font-size: 0.9rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.25s ease;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03), 0 2px 6px rgba(0, 0, 0, 0.2);
+        user-select: none;
+        min-width: 120px;
+      }
+
+      .custom-select-trigger:hover {
+        background-color: #353535;
+        border-color: rgba(255, 255, 255, 0.2);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+      }
+
+      .custom-select-trigger:hover .custom-select-arrow {
+        color: #ffffff;
+      }
+
+      .custom-select.is-open .custom-select-trigger {
+        background-color: #3a3a3a;
+        border-color: rgba(255, 255, 255, 0.35);
+        box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1), 0 4px 12px rgba(0, 0, 0, 0.35);
+      }
+
+      .custom-select.is-open .custom-select-arrow {
+        transform: rotate(180deg);
+        color: #ffffff;
+      }
+
+      .custom-select-text {
+        pointer-events: none;
+      }
+
+      .custom-select-arrow {
+        flex-shrink: 0;
+        margin-left: 10px;
+        color: #aaaaaa;
+        transition: transform 0.25s ease, color 0.25s ease;
+      }
+
+      /* 下拉选项面板 */
+      .custom-select-options {
+        position: absolute;
+        top: calc(100% + 8px);
+        left: 0;
+        right: 0;
+        background-color: #2a2a2a;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 10px;
+        padding: 6px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        opacity: 0;
+        transform: translateY(-6px);
+        pointer-events: none;
+        transition: opacity 0.2s ease, transform 0.2s ease;
+        z-index: 100;
+        max-height: 280px;
+        overflow-y: auto;
+      }
+
+      .custom-select-options::-webkit-scrollbar {
+        width: 6px;
+      }
+
+      .custom-select-options::-webkit-scrollbar-track {
+        background: transparent;
+      }
+
+      .custom-select-options::-webkit-scrollbar-thumb {
+        background-color: rgba(255, 255, 255, 0.15);
+        border-radius: 3px;
+      }
+
+      .custom-select-options::-webkit-scrollbar-thumb:hover {
+        background-color: rgba(255, 255, 255, 0.25);
+      }
+
+      .custom-select.is-open .custom-select-options {
+        opacity: 1;
+        transform: translateY(0);
+        pointer-events: auto;
+      }
+
+      .custom-select-option {
+        padding: 9px 14px;
+        color: #c0c0c0;
+        font-size: 0.9rem;
+        font-weight: 500;
+        cursor: pointer;
+        border-radius: 6px;
+        transition: background-color 0.15s ease, color 0.15s ease;
+        user-select: none;
+      }
+
+      .custom-select-option:hover {
+        background-color: rgba(255, 255, 255, 0.06);
+        color: #ffffff;
+      }
+
+      .custom-select-option.is-selected {
+        background-color: rgba(255, 255, 255, 0.1);
+        color: #ffffff;
+      }
+
+      .custom-select-option.is-selected::before {
+        content: "✓";
+        margin-right: 8px;
+        font-size: 0.8rem;
+        opacity: 0.8;
       }
 
       .filter-info {
@@ -588,15 +730,29 @@
       <div class="filter-section">
         <div class="filter-group">
           <label for="year-filter">年份:</label>
-          <select id="year-filter" class="filter-select">
-            <option value="all">全部</option>
-          </select>
+          <div class="custom-select" data-target="year-filter">
+            <div class="custom-select-trigger">
+              <span class="custom-select-text">全部</span>
+              <svg class="custom-select-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </div>
+            <div class="custom-select-options"></div>
+            <select id="year-filter" class="filter-select native-select-hidden">
+              <option value="all">全部</option>
+            </select>
+          </div>
         </div>
         <div class="filter-group">
           <label for="month-filter">月份:</label>
-          <select id="month-filter" class="filter-select">
-            <option value="all">全部</option>
-          </select>
+          <div class="custom-select" data-target="month-filter">
+            <div class="custom-select-trigger">
+              <span class="custom-select-text">全部</span>
+              <svg class="custom-select-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </div>
+            <div class="custom-select-options"></div>
+            <select id="month-filter" class="filter-select native-select-hidden">
+              <option value="all">全部</option>
+            </select>
+          </div>
         </div>
         <div class="filter-info">
           <span id="image-count">加载中...</span>
