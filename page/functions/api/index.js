@@ -1,9 +1,12 @@
-export default async function onRequest(context) {
-  const { request } = context;
-  const url = new URL(request.url);
-  const base = `${url.protocol}//${url.host}`;
+/**
+ * API 文档首页（ESA Pages 函数模板）
+ */
+export default {
+  async fetch(request, env, ctx) {
+    const url = new URL(request.url);
+    const base = `${url.protocol}//${url.host}`;
 
-  const html = `
+    const html = `
 <!DOCTYPE html>
 <html lang="zh">
 <head>
@@ -45,13 +48,14 @@ export default async function onRequest(context) {
   </div>
 
   <footer>
-    <p style="margin-top:2rem; color:#777;">Powered by EO Page Functions</p>
+    <p style="margin-top:2rem; color:#777;">Powered by ESA Pages Functions</p>
   </footer>
 </body>
 </html>
   `;
 
-  return new Response(html, {
-    headers: { "Content-Type": "text/html; charset=utf-8" },
-  });
-}
+    return new Response(html, {
+      headers: { "Content-Type": "text/html; charset=utf-8" },
+    });
+  },
+};

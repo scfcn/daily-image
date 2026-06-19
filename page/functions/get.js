@@ -1,41 +1,45 @@
-// 缓存图片数据，减少重复请求
+/**
+ * 随机图重定向（ESA Pages 函数模板）
+ * 访问 /get 即随机跳转到一张历史壁纸。
+ * 缓存图片数据 12 小时，减少重复请求。
+ */
 let cachedPictures = null;
 let cacheTimestamp = 0;
-const CACHE_TTL = 43200000; // 缓存12小时（12×60×60×1000毫秒）
+const CACHE_TTL = 43200000; // 12 小时
 
-export async function onRequest(context) {
-  const { request } = context;
-  
-  try {
-    // 使用缓存数据（如果有效）
-    const now = Date.now();
-    if (!cachedPictures || now - cacheTimestamp > CACHE_TTL) {
-      // 只在缓存过期时才重新请求
-      const origin = new URL(request.url).origin;
-      const response = await fetch(`${origin}/picture/index.json`);
-      
-      if (!response.ok) {
-        return new Response('Index not found', { status: 404 });
+export default {
+  async fetch(request, env, ctx) {
+    try {
+      const now = Date.now();
+      if (!cachedPictures || now - cacheTimestamp > CACHE_TTL) {
+        const jsonUrl = new URL("/picture/index.json", request.url).toString();
+        const response = await fetch(jsonUrl, { headers: request.headers });
+
+        if (!response.ok) {
+          return new Response("Index not found", { status: 404 });
+        }
+
+        cachedPictures = await response.json();
+        cacheTimestamp = now;
       }
-      
-      // 直接解析并缓存
-      cachedPictures = await response.json();
-      cacheTimestamp = now;
+
+      if (!Array.isArray(cachedPictures) || cachedPictures.length === 0) {
+        return new Response("No images available", { status: 404 });
+      }
+
+      // 随机选择一张图片
+      const randomIndex = Math.floor(cachedPictures.length * Math.random());
+      const path = cachedPictures[randomIndex].path;
+
+      return new Response(null, {
+        status: 302,
+        headers: {
+          Location: path,
+          "Cache-Control": "no-store",
+        },
+      });
+    } catch (error) {
+      return new Response("Error", { status: 500 });
     }
-    
-    // 随机选择一张图片
-    const randomIndex = Math.floor(cachedPictures.length * Math.random());
-    const path = cachedPictures[randomIndex].path;
-    
-    // 返回重定向响应
-    return new Response(null, {
-      status: 302,
-      headers: {
-        Location: path,
-        'Cache-Control': 'no-store' // 确保每次请求都重新随机
-      }
-    });
-  } catch (error) {
-    return new Response('Error', { status: 500 });
-  }
-}
+  },
+};
